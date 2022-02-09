@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+<head>
+	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+</head>
+<body>
+
+	<style>
+		canvas{
+			border: 2px solid hotpink;
+		}
+	</style>
+
+	
+	<canvas width="800" height="600"></canvas>
+
+	<script>
+
+		var stage;
+
+
+		class Ball extends createjs.Shape {
+			constructor(x,y){
+				super();
+				this.set({x,y, radius: 10, dx: 10, dy:10});
+				this.drawMe();
+			}
+
+			drawMe() {
+				this.graphics.f('#558833').dc(0,0,10).ef();
+			}
+
+
+
+			move() {
+				this.x += this.dx;
+				this.y += this.dy;
+				this.checkBounds();
+			}
+
+			checkBounds() {
+				if(this.x <= 5) {
+					this.x = 5;
+					this.dx *= -1;
+
+				}
+				if(this.x >= stage.canvas.width - 5) {
+					this.x = stage.canvas.width - 5;
+					this.dx *= -1;
+
+				}
+				if(this.y <= 5) {
+					this.y = 5;
+					this.dy *= -1;
+
+				}
+				if(this.y >= stage.canvas.height - 5) {
+					this.y = stage.canvas.height - 5;
+					this.dy *= -1;
+				}
+			}
+		}
+
+		class Brick extends createjs.Shape {
+
+			static width= 50;
+			static height = 20;
+
+			constructor(x,y){
+				super();
+				this.set({x,y, width: 50, height: 20});
+				this.drawMe();
+			}
+
+			drawMe() {
+				this.graphics.s('black').ss(2).f('#dd3333').dr(0,0,this.width,this.height).es().ef();
+			}
+
+			intersectsCircle(x,y,radius) {
+				// if(this.x )
+				var coords = this.parent.localToGlobal(this.x,this.y);
+				return x + radius >= coords.x  && y+radius >= coords.y && coords.x + this.width >= x-radius  && coords.y + this.height >= y-radius;
+			}
+
+			bounceOff(ball) {
+				if(this.intersectsCircle(ball.x,ball.y,ball.radius)) {
+					var coords = this.parent.localToGlobal(this.x, this.y);
+					if(ball.x <= (coords.x- ball.radius)) {
+						ball.x = coords.x - ball.radius;
+						ball.dx *= -1;
+					} else if( ball.x  >= (coords.x + ball.radius) ) { // side hit
+						ball.x = coords.x + this.width + ball.radius;
+						ball.dx *= -1;
+					} else {
+						if(ball.dy < 0) {
+							ball.y = coords.y + this.height + ball.radius;
+						} else {
+							ball.y = coords.y - ball.radius;
+						}
+						ball.dy *= -1;
+					}
+				}
+			}
+
+			bounceOffMe(ball) {
+				var brickCoords = this.parent.localToGlobal(this.x, this.y);
+				var ballCoords = {x: ball.x - ball.dx , y: ball.y - ball.dy};
+				var left =  ballCoords.x < brickCoords.x - ball.radius;
+				var right = ballCoords.x > brickCoords.x + this.width + ball.radius;
+				var above = ballCoords.y < brickCoords.y - ball.radius;
+				var below = ballCoords.y > brickCoords.y + this.height + ball.radius 
+				if(left && !above && !below) {
+					ball.dx *= -1;
+					ball.x = brickCoords.x - ball.radius;
+				} else if(right && !above && !below) {
+					ball.dx *= -1;
+					ball.x = brickCoords.x + this.width + ball.radius;
+				} else if(left && above) {
+					ball.dx *= -1;
+					ball.x = brickCoords.x - ball.radius;
+					ball.dy *= -1;
+					ball.y = brickCoords.y - ball.radius;
+				} else if(right && above) {
+					ball.dx *= -1;
+					ball.x = brickCoords.x + this.width + ball.radius;
+					ball.dy *= -1;
+					ball.y = brickCoords.y - ball.radius;
+				} else if(!left && !right && above) {
+					ball.dy *= -1;
+					ball.y = brickCoords.y - ball.radius;
+				} else if(left && below) {
+					ball.dx *= -1;
+					ball.x = brickCoords.x - ball.radius;
+					ball.dy *= -1;
+					ball.y = brickCoords.y + this.height + ball.radius;
+				} else if(right && below) {
+					ball.dx *= -1;
+					ball.x = brickCoords.x + this.width + ball.radius;
+					ball.dy *= -1;
+					ball.y = brickCoords.y + this.height + ball.radius;
+				} else if(!left && !right && below) {
+					ball.dy *= -1;
+					ball.y = brickCoords.y + this.height + ball.radius;
+				} else {
+					// prevent free breakthroughs
+					console.log(above,right, below, left);
+					ball.dx *= -1;
+					ball.dy *= -1;
+				}
+			} 
+
+
+		}
+
+		class Wall extends createjs.Container {
+
+			constructor(x,y,nbLine,nbColumn) {
+				super();
+				this.set({x,y,nbLine, nbColumn});
+				this.drawMe();
+			}
+
+			drawMe() {
+				for(var i = 0; i < this.nbLine; i++) {
+					for(var j = 0; j < this.nbColumn; j++) {
+						var b = new Brick(j*Brick.width - (i%2?Brick.width/2:0), i*Brick.height);
+						this.addChild(b);
+						b.name = `[${i}-${j}]`;
+					}
+				}
+			}
+		}
+
+		function distance(x1,y1,x2,y2) {
+			return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2,2));
+		}
+
+
+		window.addEventListener('load',()=>{
+			var canvas = document.querySelector('canvas');
+			stage = new createjs.Stage(canvas);
+
+			var ball = new Ball(canvas.width/2,canvas.height - 100);
+			stage.addChild(ball);
+
+			/*for(var i = 0; i < 20; i++) {
+				for(var j = 0; j <25; j++) {
+					var br = new Brick(10 + 50*j,30 + 20*i );
+					stage.addChild(br);
+				}
+			}*/
+
+			// var w = new Wall(120,90,8,12);
+			var w = new Wall(0,0,Math.ceil(canvas.height/Brick.height),Math.ceil(canvas.width/Brick.width));
+
+			stage.addChild(w);
+
+
+			createjs.Ticker.on('tick', stage);
+			createjs.Ticker.on('tick', (evt)=>{
+				ball.move();
+				checkCracks(w,ball);
+			});
+		});
+
+		function checkCracks(wall,ball) {
+			var impactBrick  = wall.children.find((b,i)=>{
+				return b.intersectsCircle(ball.x, ball.y, ball.radius);
+			});
+			console.log('checkCracks '  + impactBrick);
+			if(impactBrick) {
+				/*ball.dx *= -1;
+				ball.dy *= -1;*/
+				impactBrick.bounceOffMe(ball);
+				ball.move();
+				wall.removeChild(impactBrick);
+			}
+		}
+	</script>
+
+</body>
+</html>
