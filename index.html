@@ -18,6 +18,721 @@
 
 		var stage;
 
+		var textBrickCoordinates = [
+    {
+        "x": 200,
+        "y": 120
+    },
+    {
+        "x": 250,
+        "y": 120
+    },
+    {
+        "x": 350,
+        "y": 120
+    },
+    {
+        "x": 400,
+        "y": 120
+    },
+    {
+        "x": 550,
+        "y": 120
+    },
+    {
+        "x": 600,
+        "y": 120
+    },
+    {
+        "x": 650,
+        "y": 120
+    },
+    {
+        "x": 800,
+        "y": 120
+    },
+    {
+        "x": 850,
+        "y": 120
+    },
+    {
+        "x": 900,
+        "y": 120
+    },
+    {
+        "x": 225,
+        "y": 140
+    },
+    {
+        "x": 375,
+        "y": 140
+    },
+    {
+        "x": 525,
+        "y": 140
+    },
+    {
+        "x": 575,
+        "y": 140
+    },
+    {
+        "x": 675,
+        "y": 140
+    },
+    {
+        "x": 825,
+        "y": 140
+    },
+    {
+        "x": 925,
+        "y": 140
+    },
+    {
+        "x": 200,
+        "y": 160
+    },
+    {
+        "x": 250,
+        "y": 160
+    },
+    {
+        "x": 350,
+        "y": 160
+    },
+    {
+        "x": 400,
+        "y": 160
+    },
+    {
+        "x": 550,
+        "y": 160
+    },
+    {
+        "x": 700,
+        "y": 160
+    },
+    {
+        "x": 800,
+        "y": 160
+    },
+    {
+        "x": 850,
+        "y": 160
+    },
+    {
+        "x": 950,
+        "y": 160
+    },
+    {
+        "x": 225,
+        "y": 180
+    },
+    {
+        "x": 375,
+        "y": 180
+    },
+    {
+        "x": 525,
+        "y": 180
+    },
+    {
+        "x": 575,
+        "y": 180
+    },
+    {
+        "x": 675,
+        "y": 180
+    },
+    {
+        "x": 825,
+        "y": 180
+    },
+    {
+        "x": 975,
+        "y": 180
+    },
+    {
+        "x": 200,
+        "y": 200
+    },
+    {
+        "x": 250,
+        "y": 200
+    },
+    {
+        "x": 300,
+        "y": 200
+    },
+    {
+        "x": 350,
+        "y": 200
+    },
+    {
+        "x": 400,
+        "y": 200
+    },
+    {
+        "x": 550,
+        "y": 200
+    },
+    {
+        "x": 600,
+        "y": 200
+    },
+    {
+        "x": 650,
+        "y": 200
+    },
+    {
+        "x": 800,
+        "y": 200
+    },
+    {
+        "x": 850,
+        "y": 200
+    },
+    {
+        "x": 950,
+        "y": 200
+    },
+    {
+        "x": 225,
+        "y": 220
+    },
+    {
+        "x": 375,
+        "y": 220
+    },
+    {
+        "x": 525,
+        "y": 220
+    },
+    {
+        "x": 575,
+        "y": 220
+    },
+    {
+        "x": 625,
+        "y": 220
+    },
+    {
+        "x": 675,
+        "y": 220
+    },
+    {
+        "x": 825,
+        "y": 220
+    },
+    {
+        "x": 925,
+        "y": 220
+    },
+    {
+        "x": 200,
+        "y": 240
+    },
+    {
+        "x": 250,
+        "y": 240
+    },
+    {
+        "x": 350,
+        "y": 240
+    },
+    {
+        "x": 400,
+        "y": 240
+    },
+    {
+        "x": 550,
+        "y": 240
+    },
+    {
+        "x": 700,
+        "y": 240
+    },
+    {
+        "x": 800,
+        "y": 240
+    },
+    {
+        "x": 850,
+        "y": 240
+    },
+    {
+        "x": 900,
+        "y": 240
+    },
+    {
+        "x": 225,
+        "y": 260
+    },
+    {
+        "x": 375,
+        "y": 260
+    },
+    {
+        "x": 525,
+        "y": 260
+    },
+    {
+        "x": 575,
+        "y": 260
+    },
+    {
+        "x": 675,
+        "y": 260
+    },
+    {
+        "x": 825,
+        "y": 260
+    },
+    {
+        "x": 875,
+        "y": 260
+    },
+    {
+        "x": 200,
+        "y": 280
+    },
+    {
+        "x": 250,
+        "y": 280
+    },
+    {
+        "x": 350,
+        "y": 280
+    },
+    {
+        "x": 400,
+        "y": 280
+    },
+    {
+        "x": 550,
+        "y": 280
+    },
+    {
+        "x": 600,
+        "y": 280
+    },
+    {
+        "x": 650,
+        "y": 280
+    },
+    {
+        "x": 800,
+        "y": 280
+    },
+    {
+        "x": 850,
+        "y": 280
+    },
+    {
+        "x": 175,
+        "y": 380
+    },
+    {
+        "x": 225,
+        "y": 380
+    },
+    {
+        "x": 275,
+        "y": 380
+    },
+    {
+        "x": 325,
+        "y": 380
+    },
+    {
+        "x": 575,
+        "y": 380
+    },
+    {
+        "x": 725,
+        "y": 380
+    },
+    {
+        "x": 775,
+        "y": 380
+    },
+    {
+        "x": 825,
+        "y": 380
+    },
+    {
+        "x": 1075,
+        "y": 380
+    },
+    {
+        "x": 1125,
+        "y": 380
+    },
+    {
+        "x": 1325,
+        "y": 380
+    },
+    {
+        "x": 250,
+        "y": 400
+    },
+    {
+        "x": 550,
+        "y": 400
+    },
+    {
+        "x": 700,
+        "y": 400
+    },
+    {
+        "x": 850,
+        "y": 400
+    },
+    {
+        "x": 1050,
+        "y": 400
+    },
+    {
+        "x": 1150,
+        "y": 400
+    },
+    {
+        "x": 1300,
+        "y": 400
+    },
+    {
+        "x": 225,
+        "y": 420
+    },
+    {
+        "x": 275,
+        "y": 420
+    },
+    {
+        "x": 525,
+        "y": 420
+    },
+    {
+        "x": 675,
+        "y": 420
+    },
+    {
+        "x": 825,
+        "y": 420
+    },
+    {
+        "x": 875,
+        "y": 420
+    },
+    {
+        "x": 1025,
+        "y": 420
+    },
+    {
+        "x": 1125,
+        "y": 420
+    },
+    {
+        "x": 1175,
+        "y": 420
+    },
+    {
+        "x": 1275,
+        "y": 420
+    },
+    {
+        "x": 250,
+        "y": 440
+    },
+    {
+        "x": 450,
+        "y": 440
+    },
+    {
+        "x": 500,
+        "y": 440
+    },
+    {
+        "x": 650,
+        "y": 440
+    },
+    {
+        "x": 700,
+        "y": 440
+    },
+    {
+        "x": 850,
+        "y": 440
+    },
+    {
+        "x": 1000,
+        "y": 440
+    },
+    {
+        "x": 1150,
+        "y": 440
+    },
+    {
+        "x": 1250,
+        "y": 440
+    },
+    {
+        "x": 225,
+        "y": 460
+    },
+    {
+        "x": 275,
+        "y": 460
+    },
+    {
+        "x": 525,
+        "y": 460
+    },
+    {
+        "x": 675,
+        "y": 460
+    },
+    {
+        "x": 825,
+        "y": 460
+    },
+    {
+        "x": 875,
+        "y": 460
+    },
+    {
+        "x": 1025,
+        "y": 460
+    },
+    {
+        "x": 1125,
+        "y": 460
+    },
+    {
+        "x": 1175,
+        "y": 460
+    },
+    {
+        "x": 1225,
+        "y": 460
+    },
+    {
+        "x": 1275,
+        "y": 460
+    },
+    {
+        "x": 250,
+        "y": 480
+    },
+    {
+        "x": 550,
+        "y": 480
+    },
+    {
+        "x": 650,
+        "y": 480
+    },
+    {
+        "x": 700,
+        "y": 480
+    },
+    {
+        "x": 850,
+        "y": 480
+    },
+    {
+        "x": 1000,
+        "y": 480
+    },
+    {
+        "x": 1150,
+        "y": 480
+    },
+    {
+        "x": 1250,
+        "y": 480
+    },
+    {
+        "x": 225,
+        "y": 500
+    },
+    {
+        "x": 275,
+        "y": 500
+    },
+    {
+        "x": 575,
+        "y": 500
+    },
+    {
+        "x": 675,
+        "y": 500
+    },
+    {
+        "x": 825,
+        "y": 500
+    },
+    {
+        "x": 875,
+        "y": 500
+    },
+    {
+        "x": 1025,
+        "y": 500
+    },
+    {
+        "x": 1125,
+        "y": 500
+    },
+    {
+        "x": 1175,
+        "y": 500
+    },
+    {
+        "x": 1275,
+        "y": 500
+    },
+    {
+        "x": 250,
+        "y": 520
+    },
+    {
+        "x": 550,
+        "y": 520
+    },
+    {
+        "x": 650,
+        "y": 520
+    },
+    {
+        "x": 700,
+        "y": 520
+    },
+    {
+        "x": 850,
+        "y": 520
+    },
+    {
+        "x": 1000,
+        "y": 520
+    },
+    {
+        "x": 1050,
+        "y": 520
+    },
+    {
+        "x": 1150,
+        "y": 520
+    },
+    {
+        "x": 1250,
+        "y": 520
+    },
+    {
+        "x": 1300,
+        "y": 520
+    },
+    {
+        "x": 225,
+        "y": 540
+    },
+    {
+        "x": 275,
+        "y": 540
+    },
+    {
+        "x": 525,
+        "y": 540
+    },
+    {
+        "x": 675,
+        "y": 540
+    },
+    {
+        "x": 825,
+        "y": 540
+    },
+    {
+        "x": 875,
+        "y": 540
+    },
+    {
+        "x": 1025,
+        "y": 540
+    },
+    {
+        "x": 1125,
+        "y": 540
+    },
+    {
+        "x": 1175,
+        "y": 540
+    },
+    {
+        "x": 1325,
+        "y": 540
+    },
+    {
+        "x": 1375,
+        "y": 540
+    },
+    {
+        "x": 150,
+        "y": 560
+    },
+    {
+        "x": 200,
+        "y": 560
+    },
+    {
+        "x": 250,
+        "y": 560
+    },
+    {
+        "x": 300,
+        "y": 560
+    },
+    {
+        "x": 350,
+        "y": 560
+    },
+    {
+        "x": 500,
+        "y": 560
+    },
+    {
+        "x": 650,
+        "y": 560
+    },
+    {
+        "x": 700,
+        "y": 560
+    },
+    {
+        "x": 800,
+        "y": 560
+    },
+    {
+        "x": 850,
+        "y": 560
+    },
+    {
+        "x": 900,
+        "y": 560
+    },
+    {
+        "x": 1000,
+        "y": 560
+    },
+    {
+        "x": 1050,
+        "y": 560
+    },
+    {
+        "x": 1150,
+        "y": 560
+    }
+];
+
 
 		class Ball extends createjs.Shape {
 			constructor(x,y){
@@ -68,18 +783,24 @@
 
 			constructor(x,y){
 				super();
-				this.set({x,y, width: 50, height: 20});
+				this.set({x,y, width: 50, height: 20, stone: false});
 				this.drawMe();
 			}
 
 			drawMe() {
-				this.graphics.s('black').ss(2).f('#dd3333').dr(0,0,this.width,this.height).es().ef();
+				var color = this.stone?'#333':'#dd3333';
+				this.graphics.s('black').ss(2).f(color).dr(0,0,this.width,this.height).es().ef();
 			}
 
 			intersectsCircle(x,y,radius) {
 				// if(this.x )
 				var coords = this.parent.localToGlobal(this.x,this.y);
 				return x + radius >= coords.x  && y+radius >= coords.y && coords.x + this.width >= x-radius  && coords.y + this.height >= y-radius;
+			}
+
+			stonify() {
+				this.stone = true;
+				this.drawMe();
 			}
 
 			bounceOff(ball) {
@@ -109,43 +830,52 @@
 				var right = ballCoords.x > brickCoords.x + this.width + ball.radius;
 				var above = ballCoords.y < brickCoords.y - ball.radius;
 				var below = ballCoords.y > brickCoords.y + this.height + ball.radius 
+				var delta = 0.0000;
 				if(left && !above && !below) {
 					ball.dx *= -1;
-					ball.x = brickCoords.x - ball.radius;
+					ball.x = brickCoords.x - ball.radius - delta;
 				} else if(right && !above && !below) {
 					ball.dx *= -1;
-					ball.x = brickCoords.x + this.width + ball.radius;
+					ball.x = brickCoords.x + this.width + ball.radius + delta;
 				} else if(left && above) {
 					ball.dx *= -1;
-					ball.x = brickCoords.x - ball.radius;
+					ball.x = brickCoords.x - ball.radius - delta;
 					ball.dy *= -1;
-					ball.y = brickCoords.y - ball.radius;
+					ball.y = brickCoords.y - ball.radius - delta;
 				} else if(right && above) {
 					ball.dx *= -1;
-					ball.x = brickCoords.x + this.width + ball.radius;
+					ball.x = brickCoords.x + this.width + ball.radius + delta;
 					ball.dy *= -1;
-					ball.y = brickCoords.y - ball.radius;
+					ball.y = brickCoords.y - ball.radius - delta;
 				} else if(!left && !right && above) {
 					ball.dy *= -1;
-					ball.y = brickCoords.y - ball.radius;
+					ball.y = brickCoords.y - ball.radius - delta;
 				} else if(left && below) {
 					ball.dx *= -1;
-					ball.x = brickCoords.x - ball.radius;
+					ball.x = brickCoords.x - ball.radius - delta;
 					ball.dy *= -1;
-					ball.y = brickCoords.y + this.height + ball.radius;
+					ball.y = brickCoords.y + this.height + ball.radius + delta;
 				} else if(right && below) {
 					ball.dx *= -1;
-					ball.x = brickCoords.x + this.width + ball.radius;
+					ball.x = brickCoords.x + this.width + ball.radius + delta;
 					ball.dy *= -1;
-					ball.y = brickCoords.y + this.height + ball.radius;
+					ball.y = brickCoords.y + this.height + ball.radius + delta;
 				} else if(!left && !right && below) {
 					ball.dy *= -1;
-					ball.y = brickCoords.y + this.height + ball.radius;
+					ball.y = brickCoords.y + this.height + ball.radius + delta;
 				} else {
 					// prevent free breakthroughs
+					delta = 0.3;
 					console.log(above,right, below, left);
 					ball.dx *= -1;
 					ball.dy *= -1;
+					// prevent stuck
+					if(this.stone) {
+						var gauche = ball.x + ball.radius < brickCoords.x + this.width/2;
+						ball.x = gauche?(brickCoords.x - this.width - ball.radius - delta):(brickCoords.x + this.width +ball.radius +delta);
+						var haut = ball.y + ball.radius < brickCoords.y + this.height/2;
+						ball.y = haut?(brickCoords.y - ball.radius - delta): (brickCoords.y + ball.radius  + delta);
+					}
 				}
 			} 
 
@@ -176,12 +906,27 @@
 		}
 
 
+		function setCanvasSize(canvas) {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		}
+
 		window.addEventListener('load',()=>{
 			var canvas = document.querySelector('canvas');
 			stage = new createjs.Stage(canvas);
 
-			var ball = new Ball(canvas.width/2,canvas.height - 100);
+			setCanvasSize(canvas);
+
+			var fond = new createjs.Shape();
+			fond.graphics.f('white').dr(0,0,canvas.width, canvas.height).ef();
+			stage.addChild(fond);
+
+			var ballList = [];
+
+			var ball = new Ball(0,0);
 			stage.addChild(ball);
+
+			ballList.push(ball);
 
 			/*for(var i = 0; i < 20; i++) {
 				for(var j = 0; j <25; j++) {
@@ -196,24 +941,46 @@
 			stage.addChild(w);
 
 
+			/*w.children.forEach(b=>{
+				b.on('click',(evt)=>{
+					evt.target.stonify();
+				});
+			})*/
+
+			w.children.forEach(b=>{
+				if(textBrickCoordinates.some(({x,y})=>(b.x == x && b.y ==y))) {
+					b.stonify();
+				}
+			})
+
 			createjs.Ticker.on('tick', stage);
 			createjs.Ticker.on('tick', (evt)=>{
-				ball.move();
-				checkCracks(w,ball);
+				ballList.forEach(b=>{
+					b.move();
+					checkCracks(w,b);
+				})
 			});
+
+			/*stage.on('click',(evt)=> {
+				let b = new Ball(evt.localX, evt.localY);
+				stage.addChild(b);
+				ballList.push(b);
+			})*/
 		});
 
 		function checkCracks(wall,ball) {
 			var impactBrick  = wall.children.find((b,i)=>{
 				return b.intersectsCircle(ball.x, ball.y, ball.radius);
 			});
-			console.log('checkCracks '  + impactBrick);
 			if(impactBrick) {
 				/*ball.dx *= -1;
 				ball.dy *= -1;*/
 				impactBrick.bounceOffMe(ball);
 				ball.move();
-				wall.removeChild(impactBrick);
+				console.log(impactBrick.stone);
+				if(!impactBrick.stone) {
+					wall.removeChild(impactBrick);
+				}
 			}
 		}
 	</script>
