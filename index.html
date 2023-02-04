@@ -734,10 +734,17 @@
 ];
 
 
+		class Tracker extends Array {
+
+			
+
+		}
+
+
 		class Ball extends createjs.Shape {
 			constructor(x,y){
 				super();
-				this.set({x,y, radius: 10, dx: 10, dy:10});
+				this.set({x,y, radius: 10, dx: 10, dy:10, lastQuarter: new CappedArray(10)});
 				this.drawMe();
 			}
 
@@ -751,7 +758,21 @@
 				this.x += this.dx;
 				this.y += this.dy;
 				this.checkBounds();
+				this.checkRepetivity();
 			}
+
+			checkRepetivity() {
+				console.log(JSON.stringify(this.lastQuarter));
+				if(this.isRepetitivelyBouncing()) {
+					console.log('repeititive');
+					if(Math.random() < 0.5) {
+						this.dx++;
+					} else {
+						this.dy++;
+					}
+				}
+			}
+
 
 			checkBounds() {
 				if(this.x <= 5) {
@@ -774,6 +795,19 @@
 					this.dy *= -1;
 				}
 			}
+
+			isRepetitivelyBouncing() {
+				return this.lastQuarter.length >= this.lastQuarter.limit && this.lastQuarter.slice(2).every((p,i,arr) => {
+					console.log(p);
+					if(!p) { return false; }
+					let q = this.lastQuarter[i];
+					return p.x == q.x && p.y == q.y;
+				});
+			}
+
+			static floatEquals(x,y) {
+				return Math.abs(x-y) < 0.0001;
+			}
 		}
 
 		class Brick extends createjs.Shape {
@@ -783,7 +817,7 @@
 
 			constructor(x,y){
 				super();
-				this.set({x,y, width: 50, height: 20, stone: false});
+				this.set({x,y, width: 50, height: 20, stone: false, lastQuarter: []});
 				this.drawMe();
 			}
 
@@ -866,7 +900,7 @@
 				} else {
 					// prevent free breakthroughs
 					delta = 0.3;
-					console.log(above,right, below, left);
+					//console.log(above,right, below, left);
 					ball.dx *= -1;
 					ball.dy *= -1;
 					// prevent stuck
@@ -877,6 +911,7 @@
 						ball.y = haut?(brickCoords.y - ball.radius - delta): (brickCoords.y + ball.radius  + delta);
 					}
 				}
+				ball.lastQuarter.push({x:ball.x, y:ball.y});
 			} 
 
 
@@ -899,6 +934,27 @@
 					}
 				}
 			}
+		}
+
+		class CappedArray extends Array {
+
+			constructor(n) {
+				super()
+				this.limit = n;
+			}
+
+			push(elt) {
+				this.unshift(elt);
+				this.length = Math.min(this.length, this.limit);
+			}
+
+			concat(arr) {
+				arr.forEach((elt)=>{
+					this.unshift(elt);
+				});
+			}
+
+
 		}
 
 		function distance(x1,y1,x2,y2) {
@@ -954,12 +1010,16 @@
 			})
 
 			createjs.Ticker.on('tick', stage);
-			createjs.Ticker.on('tick', (evt)=>{
+			var movementListener = createjs.Ticker.on('tick', (evt)=>{
 				ballList.forEach(b=>{
 					b.move();
 					checkCracks(w,b);
 				})
 			});
+
+			stage.on('dblclick',(evt)=>{
+				createjs.Ticker.off('tick', movementListener);
+			})
 
 			/*stage.on('click',(evt)=> {
 				let b = new Ball(evt.localX, evt.localY);
@@ -977,7 +1037,7 @@
 				ball.dy *= -1;*/
 				impactBrick.bounceOffMe(ball);
 				ball.move();
-				console.log(impactBrick.stone);
+				// console.log(impactBrick.stone);
 				if(!impactBrick.stone) {
 					wall.removeChild(impactBrick);
 				}
