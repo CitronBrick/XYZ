@@ -1190,6 +1190,7 @@
 			handleClick=(evt)=> {
 				this.text.text = "Loading...";
 				stage.removeChild(this);
+				// https://pixabay.com/sound-effects/blip-131856/
 				queue.installPlugin(createjs.Sound);
 				queue.loadManifest([{id:"blip",src:"./blip-131856.mp3"}]);
 				queue.on('complete', ()=>{
