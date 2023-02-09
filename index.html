@@ -12,14 +12,21 @@
 			cursor: pointer;
 		}
 
+
+
+		body {
+			overflow: hidden;
+		}
+
 		* {
 			margin: 0px ;
 			padding: 0px;
 		}
 	</style>
 
-	
-	<canvas width="800" height="600"></canvas>
+	<main>	
+		<canvas width="800" height="600"></canvas>
+	</main>
 
 	<script>
 
@@ -797,7 +804,8 @@
 
 			drawMe=()=> {
 				let ss = this.boost?1:0;
-				let color = 'rgb(234,67,26)'; // orange
+				// let color = 'rgb(234,67,26)'; // orange
+				let color = 'orangered'; // orange
 				// let color = 'sandybrown';
 				color =this.teleporting?'#b33ee6':color;
 				color = this.boost?'lime':color;
@@ -957,12 +965,12 @@
 				if(this.teleporting || this.boost) {
 					return;
 				}
-				switch(random(4)) {
-					case 0:
-					// case 1: this.repositionRandomly();break;
+				switch(random(5)) {
+					// case 0:
+					case 1: this.repositionRandomly();break;
 					case 2: this.boostMe(); break;
-					case 2: this.smaller();break;
-					case 3: this.larger(); break;
+					case 3: this.smaller();break;
+					case 4: this.larger(); break;
 				}
 			}
 
@@ -1200,8 +1208,10 @@
 			return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2,2));
 		}
 
-		function moveSecondWordLeft() {
-			textBrickCoordinates = textBrickCoordinates.map((pos)=> (pos.y > 300 ) ? ({x: pos.x - 100, y: pos.y}): pos);
+
+
+		function alignWords() {
+			textBrickCoordinates = textBrickCoordinates.map((pos)=> (pos.y > 300 ) ? ({x: pos.x - 100, y: pos.y}): {x: pos.x + 150, y: pos.y});
 		}
 
 
@@ -1210,10 +1220,17 @@
 			canvas.height = window.innerHeight;
 		}
 
+		function reveal() {
+			let usp = new URLSearchParams(window.location.search);
+			let msg = usp.get('str');
+			console.log(msg,btoa(msg));
+			return btoa(msg) == 'NDkxNDg=';
+		}
+
 		var ball;
 		window.addEventListener('load',()=>{
-			// queue = new createjs.LoadQueue(!window.location.href.startsWith('file'));
-			queue = new createjs.LoadQueue(false);
+			queue = new createjs.LoadQueue(!window.location.href.startsWith('file'));
+			// queue = new createjs.LoadQueue(false);
 			var canvas = document.querySelector('canvas');
 			stage = new createjs.Stage(canvas);
 
@@ -1249,16 +1266,16 @@
 
 			stage.addChild(w, ss);
 
-			// moveSecondWordLeft();
+			alignWords();
 
-
-			w.children.forEach(b=>{
+			//debug
+			/*w.children.forEach(b=>{
 				b.on('click',(evt)=>{
 					let {x,y} = evt.target;
 					console.log(x,y)
-					evt.target.stonify();
+					// evt.target.stonify();
 				});
-			})
+			})*/
 
 			w.children.forEach(b=>{
 				if(textBrickCoordinates.some(({x,y})=>(b.x == x && b.y ==y))) {
@@ -1301,9 +1318,13 @@
 
 			// random powerup
 			setInterval(()=>{
-				let  i = random(ballList.length);
+				let nbPowers = Math.ceil(ballList.length/4) || 1;
+				for(var i = 0; i < nbPowers; i++) {
 
-				ballList[i].powerUp();
+					let  i = random(ballList.length);
+
+					ballList[i].powerUp();
+				}
 			},5000);
 
 			stage.on('dblclick',(evt)=>{
