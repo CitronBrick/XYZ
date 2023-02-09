@@ -16,7 +16,10 @@
 
 	<script>
 
-		var stage;
+		var stage, ballList=[];
+		var w;
+		var blip;
+		var queue;
 
 		var textBrickCoordinates = [
     {
@@ -344,7 +347,7 @@
         "y": 380
     },
     {
-        "x": 575,
+        "x": 525,
         "y": 380
     },
     {
@@ -367,8 +370,8 @@
         "x": 1125,
         "y": 380
     },
-    {
-        "x": 1325,
+    { // C
+        "x": 1375,
         "y": 380
     },
     {
@@ -376,7 +379,7 @@
         "y": 400
     },
     {
-        "x": 550,
+        "x": 500,
         "y": 400
     },
     {
@@ -395,8 +398,8 @@
         "x": 1150,
         "y": 400
     },
-    {
-        "x": 1300,
+    { // c
+        "x": 1350,
         "y": 400
     },
     {
@@ -408,7 +411,7 @@
         "y": 420
     },
     {
-        "x": 525,
+        "x": 475,
         "y": 420
     },
     {
@@ -435,18 +438,18 @@
         "x": 1175,
         "y": 420
     },
-    {
-        "x": 1275,
+    { // c
+        "x": 1325,
         "y": 420
     },
     {
         "x": 250,
         "y": 440
     },
-    {
+    /*{            // the mid left of S
         "x": 450,
         "y": 440
-    },
+    },*/
     {
         "x": 500,
         "y": 440
@@ -472,7 +475,7 @@
         "y": 440
     },
     {
-        "x": 1250,
+        "x": 1300,
         "y": 440
     },
     {
@@ -484,7 +487,7 @@
         "y": 460
     },
     {
-        "x": 525,
+        "x": 475,
         "y": 460
     },
     {
@@ -512,7 +515,7 @@
         "y": 460
     },
     {
-        "x": 1225,
+        "x": 1325,
         "y": 460
     },
     {
@@ -524,7 +527,7 @@
         "y": 480
     },
     {
-        "x": 550,
+        "x": 500,
         "y": 480
     },
     {
@@ -548,7 +551,7 @@
         "y": 480
     },
     {
-        "x": 1250,
+        "x": 1300,
         "y": 480
     },
     {
@@ -560,7 +563,7 @@
         "y": 500
     },
     {
-        "x": 575,
+        "x": 525,
         "y": 500
     },
     {
@@ -588,7 +591,7 @@
         "y": 500
     },
     {
-        "x": 1275,
+        "x": 1325,
         "y": 500
     },
     {
@@ -596,7 +599,7 @@
         "y": 520
     },
     {
-        "x": 550,
+        "x": 500,
         "y": 520
     },
     {
@@ -624,7 +627,7 @@
         "y": 520
     },
     {
-        "x": 1250,
+        "x": 1350,
         "y": 520
     },
     {
@@ -640,7 +643,7 @@
         "y": 540
     },
     {
-        "x": 525,
+        "x": 475,
         "y": 540
     },
     {
@@ -668,7 +671,7 @@
         "y": 540
     },
     {
-        "x": 1325,
+        "x": 1425,
         "y": 540
     },
     {
@@ -696,7 +699,7 @@
         "y": 560
     },
     {
-        "x": 500,
+        "x": 450,
         "y": 560
     },
     {
@@ -734,74 +737,171 @@
 ];
 
 
-		class Tracker extends Array {
+		class Tracker  {
 
 			
+			constructor(limit) {
+				this.current = new CappedArray(limit);
+				this.previous = new CappedArray(limit);
+				this.limit = limit;
+			}
 
+			push(pos) {
+				
+				if(this.previous.realLength() < this.limit) {
+					this.previous.push(pos);
+				} else if(this.current.realLength() < this.limit) {
+					this.current.push(pos);
+				} else {
+					this.previous = this.current.slice();
+					this.current = new CappedArray(this.limit);
+					this.current.push(pos);
+				}
+				
+			}
+
+			isRepetitivelyBouncing() {
+
+				return  this.current.realLength() >= this.limit/2 && this.current.every((pos,i)=>{
+					let p = this.previous[i];
+					// if(!p) { return false; }
+					return p.x == pos.x && p.y == pos.y;
+				});
+			}
 		}
 
 
-		class Ball extends createjs.Shape {
+		class Ball extends createjs.Container {
 			constructor(x,y){
 				super();
-				this.set({x,y, radius: 10, dx: 10, dy:10, lastQuarter: new CappedArray(10)});
+				this.set({x,y, radius: 10, dx: 10, dy:10, tracker: new Tracker(8), nbReps: 0});
 				this.drawMe();
 			}
 
 			drawMe() {
-				this.graphics.f('#558833').dc(0,0,10).ef();
+				this.round = new createjs.Shape();
+				this.round.graphics.f('rgb(234,67,26)').dc(0,0,this.radius).ef();
+				this.addChild(this.round);
+
+				var primeMeridian = new createjs.Shape();
+				primeMeridian.graphics.s('black').mt(0, -this.radius).lt(0, this.radius).es();
+				this.addChild(primeMeridian);
+
+				let r2 = this.radius/3;
+
+				var northLine = new createjs.Shape();
+				// northLine.graphics.s('black').mt(-this.radius, -r2).lt(this.radius, -r2).es();
+				// northLine.graphics.s('black').a(0, -this.radius, this.radius, 0, Math.PI).es();
+				northLine.graphics.s('black').mt(-this.radius, -r2).qt(0,.3, this.radius, -r2).es();
+
+				var southLine = new createjs.Shape();
+				// southLine.graphics.s('black').mt(-this.radius, r2).lt(this.radius, r2).es();
+				southLine.graphics.s('black').mt(-this.radius, r2).qt(0,-0.3, this.radius, r2).es();
+				this.addChild(northLine,southLine);
+
+				/*var mask = new createjs.Shape();
+				mask.set({x:this.x, y:this.y});
+				mask.graphics.f('red').dc(0,0, this.radius).ef();*/
+				var mask = this.round.clone();
+				mask.set({x: this.x, y: this.y});
+				// this.mask = mask;
+				// this.mask = mask;
+
 			}
 
+			smaller() {
+				createjs.Tween.get(this).to({radius: this.radius/2}, 500).on('change', this.drawMe);
+			}
+
+			larger() {
+				createjs.Tween.get(this).to({radius: this.radius*2}, 500).on('change', this.drawMe);
+			}
+
+			startMovement=()=>{
+				this.move();
+				checkCracks(w, this);
+			}
 
 
 			move() {
 				this.x += this.dx;
 				this.y += this.dy;
 				this.checkBounds();
+
 				this.checkRepetivity();
 			}
 
+			resetVelocity() {
+				this.dx = this.dx > 0? 10: -10;
+				this.dy = this.dy > 0? 10: -10; 
+			}
+
+			
+
 			checkRepetivity() {
-				console.log(JSON.stringify(this.lastQuarter));
-				if(this.isRepetitivelyBouncing()) {
+				if(this.tracker.isRepetitivelyBouncing()) {
 					console.log('repeititive');
+					console.log(JSON.stringify(this.tracker));
 					if(Math.random() < 0.5) {
 						this.dx++;
 					} else {
 						this.dy++;
 					}
-				}
+					if(++this.nbReps > 5) {
+						this.repositionRandomly();
+						this.nbReps = 0;
+					}
+
+				} 
+
 			}
 
 
 			checkBounds() {
+				var out = false;
 				if(this.x <= 5) {
 					this.x = 5;
 					this.dx *= -1;
-
+					out = true;
 				}
 				if(this.x >= stage.canvas.width - 5) {
 					this.x = stage.canvas.width - 5;
 					this.dx *= -1;
+					out = true;
 
 				}
 				if(this.y <= 5) {
 					this.y = 5;
 					this.dy *= -1;
+					out = true;
 
 				}
 				if(this.y >= stage.canvas.height - 5) {
 					this.y = stage.canvas.height - 5;
 					this.dy *= -1;
+					out = true;
+
+				}
+				if(out) {
+					this.tracker.push({x: this.x, y: this.y});
+
 				}
 			}
 
 			isRepetitivelyBouncing() {
 				return this.lastQuarter.length >= this.lastQuarter.limit && this.lastQuarter.slice(2).every((p,i,arr) => {
-					console.log(p);
 					if(!p) { return false; }
 					let q = this.lastQuarter[i];
 					return p.x == q.x && p.y == q.y;
+				});
+			}
+
+
+
+			repositionRandomly() {
+				createjs.Tween.get(this).to({scale:0}, 500).on('complete',()=>{
+					this.set({x: Math.random() * stage.canvas.width, y: Math.random() * stage.canvas.height});
+					createjs.Tween.get(this).to({scale:3},500).to({scale:1},500);
 				});
 			}
 
@@ -817,12 +917,13 @@
 
 			constructor(x,y){
 				super();
-				this.set({x,y, width: 50, height: 20, stone: false, lastQuarter: []});
+				this.set({x,y, width: 50, height: 20, stone: false, hitOnce: false});
 				this.drawMe();
 			}
 
 			drawMe() {
-				var color = this.stone?'#333':'#dd3333';
+				// var color = this.stone?'#333':'#dd3333';
+				var color = this.stone && this.hitOnce?'#333':'#088';
 				this.graphics.s('black').ss(2).f(color).dr(0,0,this.width,this.height).es().ef();
 			}
 
@@ -911,7 +1012,14 @@
 						ball.y = haut?(brickCoords.y - ball.radius - delta): (brickCoords.y + ball.radius  + delta);
 					}
 				}
-				ball.lastQuarter.push({x:ball.x, y:ball.y});
+				ball.tracker.push({x:ball.x, y:ball.y});
+				if(!this.hitOnce) {
+					this.hitOnce = true;
+					this.drawMe();
+				}
+				if(!ball.tracker.isRepetitivelyBouncing()) {
+					ball.resetVelocity();
+				}
 			} 
 
 
@@ -939,13 +1047,23 @@
 		class CappedArray extends Array {
 
 			constructor(n) {
-				super()
+				super();
+				this.length = 0;
 				this.limit = n;
 			}
 
 			push(elt) {
+				if(typeof elt.x != 'number') {
+					throw new Error('aiyyeoeyoeeioyeoie ' + JSON.stringify(elt));
+				}
 				this.unshift(elt);
-				this.length = Math.min(this.length, this.limit);
+				let res = this.at(-1);
+				if(this.length > this.limit) {
+					this.length = this.limit;
+					return res;
+				} else {
+					return null;
+				}
 			}
 
 			concat(arr) {
@@ -954,11 +1072,64 @@
 				});
 			}
 
+			realLength() {
+				for(var i = 0; i < this.limit; i++ ) {
+					if(!this[i]) {
+						return i;
+					}
+				}
+				return this.limit;
+			}
 
+
+
+
+		}
+
+		class StartScreen extends createjs.Container {
+
+			constructor() {
+				super();
+				this.drawMe();
+				this.on('click',this.handleClick);
+			}
+
+			drawMe() {
+
+				let {width, height} = stage.canvas;
+
+				var fond = new createjs.Shape();
+				fond.graphics.f('black').dr(0,0,width, height).ef();
+
+				var text = new createjs.Text('click', '20px Arial', 'yellow');
+				text.set({x: width/2-10, y: height/2-10});
+				this.addChild(fond, text);
+				this.text = text;
+			}
+
+			handleClick=(evt)=> {
+				this.text.text = "Loading...";
+				stage.removeChild(this);
+				queue.installPlugin(createjs.Sound);
+				queue.loadManifest([{id:"blip",src:"./blip-131856.mp3"}]);
+				queue.on('complete', ()=>{
+					setupMovement();
+					w.visible = true;
+				});
+			}
+
+		}
+
+		function random(n) {
+			return ~~(Math.random() * n);
 		}
 
 		function distance(x1,y1,x2,y2) {
 			return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2,2));
+		}
+
+		function moveSecondWordLeft() {
+			textBrickCoordinates = textBrickCoordinates.map((pos)=> (pos.y > 300 ) ? ({x: pos.x - 100, y: pos.y}): pos);
 		}
 
 
@@ -967,9 +1138,14 @@
 			canvas.height = window.innerHeight;
 		}
 
+		var ball;
 		window.addEventListener('load',()=>{
+			// queue = new createjs.LoadQueue(!window.location.href.startsWith('file'));
+			queue = new createjs.LoadQueue(false);
 			var canvas = document.querySelector('canvas');
 			stage = new createjs.Stage(canvas);
+
+
 
 			setCanvasSize(canvas);
 
@@ -977,13 +1153,15 @@
 			fond.graphics.f('white').dr(0,0,canvas.width, canvas.height).ef();
 			stage.addChild(fond);
 
-			var ballList = [];
 
-			var ball = new Ball(0,0);
-			stage.addChild(ball);
+			ball = new Ball(0,0);
 
 			ballList.push(ball);
-
+			ballList.push(new Ball(stage.canvas.width - ball.radius, 0 ));
+			ballList.push(new Ball(0, stage.canvas.height - ball.radius ));
+			ballList.push(new Ball(stage.canvas.width - ball.radius, stage.canvas.height - ball.radius ));
+			ballList.push(new Ball(675,340));
+			ballList.forEach((ball)=>stage.addChild(ball));
 			/*for(var i = 0; i < 20; i++) {
 				for(var j = 0; j <25; j++) {
 					var br = new Brick(10 + 50*j,30 + 20*i );
@@ -992,41 +1170,71 @@
 			}*/
 
 			// var w = new Wall(120,90,8,12);
-			var w = new Wall(0,0,Math.ceil(canvas.height/Brick.height),Math.ceil(canvas.width/Brick.width));
+			w = new Wall(0,0,Math.ceil(canvas.height/Brick.height),Math.ceil(canvas.width/Brick.width));
+			w.visible = false;
 
-			stage.addChild(w);
+			let ss = new StartScreen();
+
+			stage.addChild(w, ss);
+
+			// moveSecondWordLeft();
 
 
-			/*w.children.forEach(b=>{
+			w.children.forEach(b=>{
 				b.on('click',(evt)=>{
+					let {x,y} = evt.target;
+					console.log(x,y)
 					evt.target.stonify();
 				});
-			})*/
+			})
 
 			w.children.forEach(b=>{
 				if(textBrickCoordinates.some(({x,y})=>(b.x == x && b.y ==y))) {
 					b.stonify();
 				}
-			})
+			});
 
 			createjs.Ticker.on('tick', stage);
+
+			
+			
+
+			stage.on('click',(evt)=> {
+				if(w.visible) {
+
+					let b = new Ball(evt.localX, evt.localY);
+					stage.addChild(b);
+					ballList.push(b);
+					b.startMovement();
+				}
+			});
+		});
+
+		function setupMovement() {
 			var movementListener = createjs.Ticker.on('tick', (evt)=>{
 				ballList.forEach(b=>{
-					b.move();
-					checkCracks(w,b);
+					/*b.move();
+					checkCracks(w,b);*/
+					b.startMovement();
 				})
 			});
+
+			// random reposition 
+			setInterval(()=>{
+				let  i = random(ballList.length);
+				let ball = ballList[i];
+				switch(random(4)) {
+					case 0:
+					case 1: ball.repositionRandomly();break;
+					case 2: ball.smaller();break;
+					case 3: ball.larger(); break;
+				}
+			},30*1000);
 
 			stage.on('dblclick',(evt)=>{
 				createjs.Ticker.off('tick', movementListener);
 			})
-
-			/*stage.on('click',(evt)=> {
-				let b = new Ball(evt.localX, evt.localY);
-				stage.addChild(b);
-				ballList.push(b);
-			})*/
-		});
+		}
 
 		function checkCracks(wall,ball) {
 			var impactBrick  = wall.children.find((b,i)=>{
@@ -1040,6 +1248,7 @@
 				// console.log(impactBrick.stone);
 				if(!impactBrick.stone) {
 					wall.removeChild(impactBrick);
+					createjs.Sound.play("blip");
 				}
 			}
 		}
